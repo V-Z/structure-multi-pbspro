@@ -1,0 +1,6 @@
+# Ignore backup and temporal files anywhere
+**~
+**.backup
+**.bak
+**swp
+
