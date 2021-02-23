@@ -2,6 +2,7 @@
 
 # Author: Vojtěch Zeisek, https://trapa.cz/
 # License: GNU General Public License 3.0, https://www.gnu.org/licenses/gpl-3.0.html
+# Homepage: https://github.com/V-Z/structure-multi-pbspro
 
 # 
 
@@ -10,7 +11,7 @@
 
 # 
 
-# qsub -l walltime=24:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="STRUCTURE",MAINPARAM="MAINPARAM",EXTRPARAM="EXTRPARAM",INPUTFILE="INPUTFILE",OUTNAME="OUTNAME",OUTDIR="OUTDIR",K="K",R="R" structure_multi_2_qsub.sh
+# qsub -l walltime=24:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="STRUCTURE",MAINPARAM="MAINPARAM",EXTRPARAM="EXTRPARAM",INPUTFILE="INPUTFILE",OUTNAME="OUTNAME",OUTDIR="OUTDIR",K="K",R="R",SCRIPTDIR="SCRIPTDIR" "${SCRIPTDIR}"/structure_multi_2_qsub.sh
 
 # Clean-up of SCRATCH
 trap 'clean_scratch' TERM EXIT
@@ -47,6 +48,10 @@ if [ -z "${K}" ]; then
 	fi
 if [ -z "${R}" ]; then
 	echo "Error! R not provided!"
+	exit 1
+	fi
+if [ -z "${SCRIPTDIR}" ]; then
+	echo "Error! SCRIPTDIR not available!"
 	exit 1
 	fi
 

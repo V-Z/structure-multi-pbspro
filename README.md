@@ -13,7 +13,7 @@ Vojtěch Zeisek, <https://trapa.cz/>.
 
 # Homepage and reporting issues
 
-See <https://github.com/V-Z/structure-multi-pbspro> and report any issues or wishes using <https://github.com/V-Z/structure-multi-pbspro/issues>.
+See <https://github.com/V-Z/structure-multi-pbspro>, ask about usage or so at <https://github.com/V-Z/structure-multi-pbspro/discussions> and report any issues or wishes using <https://github.com/V-Z/structure-multi-pbspro/issues>.
 
 # License
 
@@ -41,5 +41,21 @@ x
 
 # Usage of the scripts
 
-x
+Prepare input file and MAINPARAMS and EXTRAPARAMS files according to [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html).
+
+## Using structure_multi_1_submitter.sh
+
+Script `structure_multi_1_submitter.sh` will use `qsub` to submit multiple jobs to calculate individual STRUCTURE runs. E.g. for K ranging from 1 to 10 and with 10 repetitions it will submit 100 jobs, which can be by cluster/grid computed in parallel.
+
+* `-h` Print help.
+* `-v` Print script version, author and license and exit.
+* `-s` Path to STRUCTURE binary. If not provided, it must be available in `PATH` variable.
+* `-m` Path to STRUCTURE MAINPARAMS file. Consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html) (required).
+* `-e` Path to STRUCTURE EXTRAPARAMS file. Consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html) (required).
+* `-i` Input data file. Consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html) (required).
+* `-n` Output files base name. If not provided, default is `res`. It can contain only Latin characters, numbers, dots, underscores or dashes. The name for each output file will be as `res.k.X.rep.Y.out`, where `X` is actual K and `Y` is repetition.
+* `-o` Output directory. Should be empty. If provided directory does not exist, it will be created (required).
+* `-f` Minimal K. Default is 1.
+* `-k` Maximal K. Default is 10.
+* `-r` How many times run for each K. Default is 10.
 
