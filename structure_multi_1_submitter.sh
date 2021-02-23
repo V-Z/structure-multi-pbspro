@@ -245,25 +245,22 @@ echo
 ################################################################################
 # Jobs submission
 # NOTE On another clusters than Czech MetaCentrum edit the 'qsub' command below to fit your needs
+# See https://wiki.metacentrum.cz/wiki/About_scheduling_system
+# NOTE Edit qsub parameters if you need more resources, use particular cluster, etc.
 ################################################################################
 
 # Submit jobs within given range of Ks
 for (( K="${KMIN}"; K<="${KMAX}"; K++ )); do
-	
 	echo "Submitting jobs for K ${K}."
 	echo
-	
 	# Multiple jobs for particular K
 	for (( R=1; R<="${KREP}"; R++ )); do
-		
 		echo "Submitting job for K ${K}, repetition ${R}."
 		# Submission using PBS Pro
-		# NOTE Edit following commands on clusters/grids using different queuing system
-		qsub -l walltime=24:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="STRUCTURE",MAINPARAM="MAINPARAM",EXTRPARAM="EXTRPARAM",INPUTFILE="INPUTFILE",OUTNAME="OUTNAME",OUTDIR="OUTDIR",K="K",R="R",SCRIPTDIR="SCRIPTDIR" "${SCRIPTDIR}"/structure_multi_2_qsub.sh || { echo "Job submission failed!" && exit 1; }
+		# NOTE Edit following command on clusters/grids using different queuing system or if different parameters are needed
+		qsub -l walltime=24:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="STRUCTURE",MAINPARAM="MAINPARAM",EXTRPARAM="EXTRPARAM",INPUTFILE="INPUTFILE",OUTNAME="OUTNAME",OUTDIR="OUTDIR",K="K",R="R",SCRIPTDIR="SCRIPTDIR" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh || { echo "Job submission failed!" && exit 1; }
 		echo
-		
 		done
-	
 	done
 
 echo "Done!"
