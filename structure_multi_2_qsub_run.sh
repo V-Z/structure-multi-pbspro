@@ -4,12 +4,12 @@
 # License: GNU General Public License 3.0, https://www.gnu.org/licenses/gpl-3.0.html
 # Homepage: https://github.com/V-Z/structure-multi-pbspro
 
-# 
+# The script uses variables passed via `qsub` from script `structure_multi_1_submitter.sh` and calculates single run of STRUCTURE.
 
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-# qsub -l walltime=24:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="STRUCTURE",MAINPARAM="MAINPARAM",EXTRPARAM="EXTRPARAM",INPUTFILE="INPUTFILE",OUTNAME="OUTNAME",OUTDIR="OUTDIR",K="K",R="R",SCRIPTDIR="SCRIPTDIR" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh
+# qsub -l walltime=24:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="STRUCTURE",MAINPARAM="MAINPARAM",EXTRPARAM="EXTRPARAM",INPUTFILE="INPUTFILE",OUTNAME="OUTNAME",OUTDIR="OUTDIR",K="K",R="R" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh
 
 ################################################################################
 # If using this script standalone (not via structure_multi_1_submitter.sh), either export the
@@ -25,7 +25,6 @@
 # OUTDIR=''    # Output directory
 # K=''         # K of actual run
 # R=''         # Actual repetition
-# SCRIPTDIR='' # Directory where the structure_multi_*.sh scripts are located
 
 ################################################################################
 # Checking if all required variables are passed via qsub from structure_multi_1_submitter.sh
@@ -61,10 +60,6 @@ if [ -z "${R}" ]; then
 	echo "Error! R not provided!"
 	exit 1
 	fi
-if [ -z "${SCRIPTDIR}" ]; then
-	echo "Error! Directory where the structure_multi_*.sh scripts are located not available!"
-	exit 1
-	fi
 
 ################################################################################
 # Cleanup of temporal (scratch) directory where the calculation was done
@@ -88,14 +83,14 @@ if [ -z "${STRUCTURE}" ]; then
 	echo "Loading module"
 	# NOTE Edit following command on clusters/grids using different loading of application modules
 	module add structure-2.3.4 || exit 1
-	STRUCTURE="$(which structure)" || exit 1
+	STRUCTURE="$(command -v structure)" || exit 1
 	echo
 	fi
 
 ################################################################################
-# 
+# Switching to temporal (SCRATCH) directory and copying input data there
 # See https://wiki.metacentrum.cz/wiki/Beginners_guide#Run_batch_jobs
-# NOTE 
+# NOTE On another clusters than Czech MetaCentrum ensure that SCRATCH is the variable for temporal directory - if not, edit following code accordingly
 ################################################################################
 
 # Change working directory
@@ -113,20 +108,30 @@ echo "Input data file - ${INPUTFILE}"
 cp "${INPUTFILE}" "${SCRATCH}"/ || exit 1
 echo
 
-# Runing the STRUCTURE
-echo "Running STRUCTURE with MAINPARAMS file ${MAINPARAM}, EXTRAPARAMS file ${EXTRPARAM} and input file ${INPUTFILE} for K ${K} and repetition ${R} at $(date)..."
+################################################################################
+# The STRUCTURE calculation
+################################################################################
+
+# Running the STRUCTURE
+echo "Running STRUCTURE with MAINPARAMS file $(basename "${MAINPARAM}"), EXTRAPARAMS file $(basename "${EXTRPARAM}") and input file $(basename "${INPUTFILE}") for K ${K} and repetition ${R} at $(date)..." | tee "${OUTNAME}.k.${K}.rep.${R}.log"
+echo | tee -a "${OUTNAME}.k.${K}.rep.${R}.log"
+"${STRUCTURE}" -m "$(basename "${MAINPARAM}")" -e "$(basename "${EXTRPARAM}")" -K "${K}" -i "$(basename "${INPUTFILE}")" -o "${OUTNAME}.k.${K}.rep.${R}.out" | tee -a "${OUTNAME}.k.${K}.rep.${R}.log"
 echo
-"${STRUCTURE}" -m "${MAINPARAM}" -e "${EXTRPARAM}" -K "${K}" -i "${INPUTFILE}" -o "${OUTNAME}.k.${K}.rep.${R}.out" | tee "${OUTNAME}.k.${K}.rep.${R}.log"
-echo
+
+################################################################################
+# Input files are removed from temporal working directory
+# Results are copied to the output directory
+# NOTE On another clusters than Czech MetaCentrum ensure that SCRATCH is the variable for temporal directory - if not, edit following code accordingly
+################################################################################
 
 # Removing unneeded files
 echo "Removing temporal files"
-rm "$(basename ${MAINPARAM})" "$(basename ${EXTRPARAM})" "$(basename ${INPUTFILE})"
+rm "$(basename "${MAINPARAM}")" "$(basename "${EXTRPARAM}")" "$(basename "${INPUTFILE}")"
 echo
 
 # Copy results back to storage
 echo "Copying results to ${OUTDIR}"
-cp -a "${SCRATCH}"/* "${DATADIR}"/ || export CLEAN_SCRATCH='false'
+cp -a "${SCRATCH}"/* "${OUTDIR}"/ || { export CLEAN_SCRATCH='false'; echo "Copying failed!"; }
 echo
 
 exit

@@ -3,7 +3,7 @@ STRUCTURE multi PBS Pro scripts
 
 **Set of scripts to run [STRUCTURE](https://web.stanford.edu/group/pritchardlab/structure.html) in parallel** on computing grids like [MetaCentrum](https://www.metacentrum.cz/). Scripts are designed for grids and clusters using PBS Pro, but can be easily adopted for another queue system.
 
-Version: alpha
+Version: beta
 
 **EARLY PHASE OF DEVELOPMENT**
 
@@ -43,9 +43,7 @@ x
 
 Prepare input file and MAINPARAMS and EXTRAPARAMS files according to [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html).
 
-## Using structure_multi_1_submitter.sh
-
-Script `structure_multi_1_submitter.sh` will use `qsub` to submit multiple jobs to calculate individual STRUCTURE runs. E.g. for K ranging from 1 to 10 and with 10 repetitions it will submit 100 jobs, which can be by cluster/grid computed in parallel.
+Script `structure_multi_1_submitter.sh` will use `qsub` to submit multiple jobs to calculate individual STRUCTURE runs. E.g. for K ranging from 1 to 10 and with 10 repetitions it will submit 100 jobs, which can be by cluster/grid computed in parallel (queueing system will decide according to cluster load).
 
 * `-h` Print help.
 * `-v` Print script version, author and license and exit.
@@ -58,4 +56,6 @@ Script `structure_multi_1_submitter.sh` will use `qsub` to submit multiple jobs 
 * `-f` Minimal K. Default is 1.
 * `-k` Maximal K. Default is 10.
 * `-r` How many times run for each K. Default is 10.
+
+Script `structure_multi_1_submitter.sh` will pass needed variables --- i.e. input files, output name and directory, path to STRUCTURE binary (if needed) and particular K and repetition --- to `structure_multi_2_qsub_run.sh` which will do the calculation. The latter script uses variables passed via `qsub` from script `structure_multi_1_submitter.sh` and calculates single run of STRUCTURE. As all the jobs are submitted in single step, the cluster queueing system can highly parallelize all calculations (if the cluster has enough performance, all jobs can dun in parallel).
 
