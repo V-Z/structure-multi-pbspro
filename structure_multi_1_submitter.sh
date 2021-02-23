@@ -51,7 +51,7 @@ while getopts "hvs:m:e:i:n:o:f:k:r:" INITARGS; do
 			exit
 			;;
 		v) # Print script version and exit
-			echo "Version: beta"
+			echo "Version: 1.0"
 			echo "Author: Vojtěch Zeisek, <https://trapa.cz/en>"
 			echo "Homepage and documentation: <https://github.com/V-Z/structure-multi-pbspro>"
 			echo "Discussion: <https://github.com/V-Z/structure-multi-pbspro/discussions>"
@@ -118,7 +118,7 @@ while getopts "hvs:m:e:i:n:o:f:k:r:" INITARGS; do
 			;;
 		o) # Output directory
 			if [ -d "${OPTARG}" ]; then
-				OUTDIR="${OPTARG}"
+				OUTDIR=$(realpath "${OPTARG}")
 				echo "Output directory: ${OUTDIR}"
 				echo
 				else
@@ -258,7 +258,7 @@ for (( K="${KMIN}"; K<="${KMAX}"; K++ )); do
 		echo "Submitting job for K ${K}, repetition ${R}."
 		# Submission using PBS Pro
 		# NOTE Edit following command on clusters/grids using different queuing system or if different parameters are needed
-		qsub -l walltime=24:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="STRUCTURE",MAINPARAM="MAINPARAM",EXTRPARAM="EXTRPARAM",INPUTFILE="INPUTFILE",OUTNAME="OUTNAME",OUTDIR="OUTDIR",K="K",R="R" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh || { echo "Job submission failed!" && exit 1; }
+		qsub -l walltime=24:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="${STRUCTURE}",MAINPARAM="${MAINPARAM}",EXTRPARAM="${EXTRPARAM}",INPUTFILE="${INPUTFILE}",OUTNAME="${OUTNAME}",OUTDIR="${OUTDIR}",K="${K}",R="${R}" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh || { echo "Job submission failed!" && exit 1; }
 		echo
 		done
 	done

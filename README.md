@@ -3,9 +3,7 @@ STRUCTURE multi PBS Pro scripts
 
 **Set of scripts to run [STRUCTURE](https://web.stanford.edu/group/pritchardlab/structure.html) in parallel** on computing grids like [MetaCentrum](https://www.metacentrum.cz/). Scripts are designed for grids and clusters using PBS Pro, but can be easily adopted for another queue system.
 
-Version: beta
-
-**EARLY PHASE OF DEVELOPMENT**
+Version: 1.0
 
 # Author
 
@@ -25,37 +23,52 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 # About STRUCTURE and its parallelization
 
-x
+STRUCTURE itself process single file in time. It has simple Java GUI available to create batch task and run on desktop, or also possibly on MetaCentrum. Other option in [ParallelStructure R package](https://r-forge.r-project.org/projects/parallstructure/) (see my [example](https://trapa.cz/en/structure-r-linux) and [slides](https://soubory.trapa.cz/rcourse/r_mol_data_phylogen.pdf)), but it has problems with some input file formats. It runs on single computer, using multiple cores. Provided scripts distribute individual runs of STRUCTURE among multiple computers in computing cluster/grid, which speeds up everything a lot.
 
 # Requirements to use the scripts
 
-The scripts are written for Linux servers. They might be running on another UNIX systems. Apart of BASH, the only requirement is STRUCTURE. It [is already installed on MetaCentrum](https://wiki.metacentrum.cz/wiki/Structure), so that user can simply load the module. If using own installation of STRUCTURE, either comment out or update respective line in script `structure_multi_2_qsub.sh`.
+The scripts are written for Linux servers. They might be running on another UNIX systems. Apart of BASH, the only requirement is [STRUCTURE](https://web.stanford.edu/group/pritchardlab/structure.html). It [is already installed on MetaCentrum](https://wiki.metacentrum.cz/wiki/Structure), so that user can simply load the module. If using own installation of STRUCTURE, either comment out or update respective line in script `structure_multi_2_qsub.sh`. If you are unsure how to work in Linux command line on computing cluster, consult e.g. [my slides](https://soubory.trapa.cz/linuxcourse/linux_bash_metacentrum_course.pdf) or [MetaCentrum wiki](https://wiki.metacentrum.cz/).
 
 # Installation
 
-x
+Either download and decompress [latest release](https://github.com/V-Z/structure-multi-pbspro/releases) or clone the Git repository:
+
+```shell
+git clone https://github.com/V-Z/structure-multi-pbspro.git
+cd structure-multi-pbspro/
+./structure_multi_1_submitter.sh -h
+```
+Consider copying of both scripts `structure_multi_1_submitter.sh` and `structure_multi_2_qsub_run.sh` into some folder dedicated to store scripts and software like `~/bin/` to have them available in PATH.
 
 # Adopting the scripts for another clusters and grids than Czech MetaCentrum
 
-x
+If your cluster/grid is using different scheduling system than [PBS on MetaCentrum](https://wiki.metacentrum.cz/wiki/About_scheduling_system), edit in last section of `structure_multi_1_submitter.sh` the `qsub` line. Also, if you need to submit the job to particular queue, change time to run, needed memory or so (e.g. for larger data), edit required resources on that `qsub` line.
+
+If your cluster/grid is using different method to cleanup of temporal (scratch) directories [than MetaCentrum](https://wiki.metacentrum.cz/wiki/Trap_command_usage), edit or remove `trap` commands in `structure_multi_2_qsub_run.sh`. If your cluster/grid is using different method to manage application modules [than MetaCentrum](https://wiki.metacentrum.cz/wiki/Structure), edit or remove the block with `module add` command in `structure_multi_2_qsub_run.sh`. If your cluster/grid is using different name of variable pointing to temporal working directory than `SCRATCH` on [MetaCentrum](https://wiki.metacentrum.cz/wiki/Beginners_guide), replace all occurrences of `SCRATCH` by the correct variable name in `structure_multi_2_qsub_run.sh`.
+
+Of course, improvements, generalizations for easier work on another clusters/grids are welcomed. :-)
 
 # Usage of the scripts
 
-Prepare input file and MAINPARAMS and EXTRAPARAMS files according to [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html).
+Prepare input file and MAINPARAMS and EXTRAPARAMS files according to [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html). The scripts need them as input. They then overwrite the K stated in MAINPARAMS to get the range of Ks, and name outputs according to K and repetition.
 
 Script `structure_multi_1_submitter.sh` will use `qsub` to submit multiple jobs to calculate individual STRUCTURE runs. E.g. for K ranging from 1 to 10 and with 10 repetitions it will submit 100 jobs, which can be by cluster/grid computed in parallel (queueing system will decide according to cluster load).
 
-* `-h` Print help.
-* `-v` Print script version, author and license and exit.
-* `-s` Path to STRUCTURE binary. If not provided, it must be available in `PATH` variable.
-* `-m` Path to STRUCTURE MAINPARAMS file. Consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html) (required).
-* `-e` Path to STRUCTURE EXTRAPARAMS file. Consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html) (required).
-* `-i` Input data file. Consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html) (required).
-* `-n` Output files base name. If not provided, default is `res`. It can contain only Latin characters, numbers, dots, underscores or dashes. The name for each output file will be as `res.k.X.rep.Y.out`, where `X` is actual K and `Y` is repetition.
-* `-o` Output directory. Should be empty. If provided directory does not exist, it will be created (required).
-* `-f` Minimal K. Default is 1.
-* `-k` Maximal K. Default is 10.
-* `-r` How many times run for each K. Default is 10.
+* `-h` --- Print help and exit.
+* `-v` --- Print script version, author and license and exit.
+* `-s` --- Path to STRUCTURE binary. If not provided, it must be available in `PATH` variable.
+* `-m` --- Path to STRUCTURE MAINPARAMS file. Consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html) (required).
+* `-e` --- Path to STRUCTURE EXTRAPARAMS file. Consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html) (required).
+* `-i` --- Input data file. Consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html) (required).
+* `-n` --- Output files base name. If not provided, default is `res`. It can contain only Latin characters, numbers, dots, underscores or dashes. The name for each output file will be as `res.k.X.rep.Y.out`, where `X` is actual K and `Y` is repetition.
+* `-o` --- Output directory. Should be empty. If provided directory does not exist, it will be created (required).
+* `-f` --- Minimal K. Default is 1.
+* `-k` --- Maximal K. Default is 10.
+* `-r` --- How many times run for each K. Default is 10.
 
 Script `structure_multi_1_submitter.sh` will pass needed variables --- i.e. input files, output name and directory, path to STRUCTURE binary (if needed) and particular K and repetition --- to `structure_multi_2_qsub_run.sh` which will do the calculation. The latter script uses variables passed via `qsub` from script `structure_multi_1_submitter.sh` and calculates single run of STRUCTURE. As all the jobs are submitted in single step, the cluster queueing system can highly parallelize all calculations (if the cluster has enough performance, all jobs can dun in parallel).
+
+# Postprocessing of the results
+
+For next step collect all `res.k.X.rep.Y.out_f` files in the output directory. Select the best K using e.g. Structure_sum R script (see my [example](https://trapa.cz/en/structure-r-linux) and [slides](https://soubory.trapa.cz/rcourse/r_mol_data_phylogen.pdf)) or [Structure Harvester](http://taylor0.biology.ucla.edu/structureHarvester/). Align and reorder the results with [CLUMPP](https://web.stanford.edu/group/rosenberglab/clumpp.html) and draw final plots by e.g. [distruct](https://web.stanford.edu/group/rosenberglab/distruct.html). See also my [complete example](https://trapa.cz/en/structure-r-linux).
 
