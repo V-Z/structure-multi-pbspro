@@ -75,9 +75,9 @@ If there is no need to edit the scripts (see following chapter), typical usage i
 qstat -w -n -1 -u "${USER}" -x
 ```
 
-If jobs are correctly submitted, but there are no `*_f` output files in the output directory (`str_outdir` in the above example), check output logs as there is probably something wrong with your input data. If so, consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html).
+If jobs are correctly submitted, but there are no `*_f` output files in the output directory (`str_outdir` in the above example), check output logs as there is probably something wrong with your input data. If so, consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html). If input files were prepared on Windows, ensure they have correct EOL, e.g. using `dos2unix`.
 
-Normally, there is **no need manually run** `structure_multi_2_qsub_run.sh` --- it is used by `structure_multi_1_submitter.sh`. It is possible to use `structure_multi_2_qsub_run.sh` for single run --- see comments in it what to edit in such case.
+Normally, there is **no need to manually run** `structure_multi_2_qsub_run.sh` --- it is used by `structure_multi_1_submitter.sh`. It is possible to use `structure_multi_2_qsub_run.sh` for single run (see comments in it what to edit in such case).
 
 # Adopting the scripts for another clusters and grids than Czech MetaCentrum
 
