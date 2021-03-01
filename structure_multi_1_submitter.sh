@@ -15,6 +15,8 @@ SCRIPTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)" || { e
 
 ################################################################################
 # Processing user input
+# Do not edit this section unless you are very sure what you are doing - edits, if needed, are expected only in the last section
+# Sections of the code where edits are to be expected are marked by "NOTE" in comments (see below)
 ################################################################################
 
 # Variables used

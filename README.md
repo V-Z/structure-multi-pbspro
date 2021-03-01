@@ -38,15 +38,8 @@ git clone https://github.com/V-Z/structure-multi-pbspro.git
 cd structure-multi-pbspro/
 ./structure_multi_1_submitter.sh -h
 ```
+
 Consider copying of both scripts `structure_multi_1_submitter.sh` and `structure_multi_2_qsub_run.sh` into some folder dedicated to store scripts and software like `~/bin/` to have them available in PATH.
-
-# Adopting the scripts for another clusters and grids than Czech MetaCentrum
-
-If your cluster/grid is using different scheduling system than [PBS on MetaCentrum](https://wiki.metacentrum.cz/wiki/About_scheduling_system), edit in last section of `structure_multi_1_submitter.sh` the `qsub` line. Also, if you need to submit the job to particular queue, change time to run, needed memory or so (e.g. for larger data), edit required resources on that `qsub` line.
-
-If your cluster/grid is using different method to cleanup of temporal (scratch) directories [than MetaCentrum](https://wiki.metacentrum.cz/wiki/Trap_command_usage), edit or remove `trap` commands in `structure_multi_2_qsub_run.sh`. If your cluster/grid is using different method to manage application modules [than MetaCentrum](https://wiki.metacentrum.cz/wiki/Structure), edit or remove the block with `module add` command in `structure_multi_2_qsub_run.sh`. If your cluster/grid is using different name of variable pointing to temporal working directory than `SCRATCH` on [MetaCentrum](https://wiki.metacentrum.cz/wiki/Beginners_guide), replace all occurrences of `SCRATCH` by the correct variable name in `structure_multi_2_qsub_run.sh`.
-
-Of course, improvements, generalizations for easier work on another clusters/grids are welcomed. :-)
 
 # Usage of the scripts
 
@@ -67,6 +60,26 @@ Script `structure_multi_1_submitter.sh` will use `qsub` to submit multiple jobs 
 * `-r` --- How many times run for each K. Default is 10.
 
 Script `structure_multi_1_submitter.sh` will pass needed variables --- i.e. input files, output name and directory, path to STRUCTURE binary (if needed) and particular K and repetition --- to `structure_multi_2_qsub_run.sh` which will do the calculation. The latter script uses variables passed via `qsub` from script `structure_multi_1_submitter.sh` and calculates single run of STRUCTURE. As all the jobs are submitted in single step, the cluster queueing system can highly parallelize all calculations (if the cluster has enough performance, all jobs can dun in parallel).
+
+## Usage example
+
+If there is no need to edit the scripts (see following chapter), typical usage is like this:
+
+```shell
+./structure_multi_1_submitter.sh -m mainparams.txt -e extraparams.txt -i input.str -n myanalysis -o str_outdir -f 1 -k 10 -r 10
+```
+
+If jobs are correctly submitted, but there are no `*_f` output files in the output directory, check output logs as there is probably something wrong with your input data. If so, consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html).
+
+# Adopting the scripts for another clusters and grids than Czech MetaCentrum
+
+Edits **might be** required on clusters/grids using **different scheduling system than PBS Pro**. Of course, improvements are welcomed, but **edit the code only if you know what you are doing**. ;-)
+
+If your cluster/grid is using different scheduling system than [PBS on MetaCentrum](https://wiki.metacentrum.cz/wiki/About_scheduling_system), edit in last section of `structure_multi_1_submitter.sh` the `qsub` line. Also, if you need to submit the job to particular queue, change time to run, needed memory or so (e.g. for larger data), edit required resources on that `qsub` line.
+
+If your cluster/grid is using different method to cleanup of temporal (scratch) directories [than MetaCentrum](https://wiki.metacentrum.cz/wiki/Trap_command_usage), edit or remove `trap` commands in `structure_multi_2_qsub_run.sh`. If your cluster/grid is using different method to manage application modules [than MetaCentrum](https://wiki.metacentrum.cz/wiki/Structure), edit or remove the block with `module add` command in `structure_multi_2_qsub_run.sh`. If your cluster/grid is using different name of variable pointing to temporal working directory than `SCRATCH` on [MetaCentrum](https://wiki.metacentrum.cz/wiki/Beginners_guide), replace all occurrences of `SCRATCH` by the correct variable name in `structure_multi_2_qsub_run.sh`.
+
+Of course, improvements, generalizations for easier work on another clusters/grids are welcomed. :-)
 
 # Postprocessing of the results
 

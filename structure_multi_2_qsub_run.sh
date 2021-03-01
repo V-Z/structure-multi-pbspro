@@ -13,6 +13,10 @@
 # qsub -l walltime=24:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="${STRUCTURE}",MAINPARAM="${MAINPARAM}",EXTRPARAM="${EXTRPARAM}",INPUTFILE="${INPUTFILE}",OUTNAME="${OUTNAME}",OUTDIR="${OUTDIR}",K="${K}",R="${R}" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh
 
 ################################################################################
+# Sections of the code where edits are to be expected are marked by "NOTE" in comments (see below)
+################################################################################
+
+################################################################################
 # If using this script standalone (not via structure_multi_1_submitter.sh), either export the
 # needed variables in shell, or uncomment the below section and declare all needed variables here
 ################################################################################
