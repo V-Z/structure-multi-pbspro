@@ -179,10 +179,9 @@ while getopts "hvs:m:e:i:n:o:f:k:r:" INITARGS; do
 # Checking if all required parameters are provided
 if [ -z "${STRUCTURE}" ]; then # Path to STRUCTURE binary
 	command -v structure >/dev/null 2>&1 || {
-		echo >&2 "Error! Path to STRUCTURE binary (-s) was not specified and command 'structure' was not found in PATH!"
-		echo "See usage options: \"$0 -h\""
+		echo "Path to STRUCTURE binary (-s) was not specified and command 'structure' was not found in PATH."
+		echo "If STRUCTURE module will not be correctly loaded in 'structure_multi_2_qsub_run.sh', all jobs will crash."
 		echo
-		exit 1
 		}
 	fi
 if [ -z "${MAINPARAM}" ]; then # Path to STRUCTURE MAINPARAMS file
