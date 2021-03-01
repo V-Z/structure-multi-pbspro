@@ -23,7 +23,9 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 # About STRUCTURE and its parallelization
 
-STRUCTURE itself process single file in time. It has simple Java GUI available to create batch task and run on desktop, or also possibly on MetaCentrum. Other option in [ParallelStructure R package](https://r-forge.r-project.org/projects/parallstructure/) (see my [example](https://trapa.cz/en/structure-r-linux) and [slides](https://soubory.trapa.cz/rcourse/r_mol_data_phylogen.pdf)), but it has problems with some input file formats. It runs on single computer, using multiple cores. Provided scripts distribute individual runs of STRUCTURE among multiple computers in computing cluster/grid, which speeds up everything a lot.
+STRUCTURE itself process single file in time. It has simple Java GUI available to create batch task and run on desktop, or also possibly on MetaCentrum. Other option in [ParallelStructure R package](https://r-forge.r-project.org/projects/parallstructure/) (see my [example](https://trapa.cz/en/structure-r-linux) and [slides](https://soubory.trapa.cz/rcourse/r_mol_data_phylogen.pdf)), but it has problems with some input file formats. It runs on single computer, using multiple cores.
+
+Provided scripts distribute individual runs of STRUCTURE among multiple nodes (computers, servers) in computing cluster/grid, which speeds up everything a lot. STRUCTURE must be rune repeatedly for different K, and also for each K repeatedly. Here, `structure_multi_1_submitter.sh` will submit each single run as individual computing job. As soon as `structure_multi_1_submitter.sh` is done, the computing jobs are submitted to the queue and user can monitor their progress by commands like `qstat` (depending on scheduling system of the computing grid/cluster), and see if something already appeared in the output directory.
 
 # Requirements to use the scripts
 
@@ -66,14 +68,20 @@ Script `structure_multi_1_submitter.sh` will pass needed variables --- i.e. inpu
 If there is no need to edit the scripts (see following chapter), typical usage is like this:
 
 ```shell
+# Submit the job
 ./structure_multi_1_submitter.sh -m mainparams.txt -e extraparams.txt -i input.str -n myanalysis -o str_outdir -f 1 -k 10 -r 10
+# Monitor if jobs are running
+# Different command might be needed on computing grids/clusters using different scheduling system
+qstat -w -n -1 -u "${USER}" -x
 ```
 
-If jobs are correctly submitted, but there are no `*_f` output files in the output directory, check output logs as there is probably something wrong with your input data. If so, consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html).
+If jobs are correctly submitted, but there are no `*_f` output files in the output directory (`str_outdir` in the above example), check output logs as there is probably something wrong with your input data. If so, consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html).
+
+Normally, there is **no need manually run** `structure_multi_2_qsub_run.sh` --- it is used by `structure_multi_1_submitter.sh`. It is possible to use `structure_multi_2_qsub_run.sh` for single run --- see comments in it what to edit in such case.
 
 # Adopting the scripts for another clusters and grids than Czech MetaCentrum
 
-Edits **might be** required on clusters/grids using **different scheduling system than PBS Pro**. Of course, improvements are welcomed, but **edit the code only if you know what you are doing**. ;-)
+Edits **might be** required on clusters/grids using **different scheduling system than PBS Pro**. Of course, improvements are welcomed, but *edit the code only if you know what you are doing*. ;-)
 
 If your cluster/grid is using different scheduling system than [PBS on MetaCentrum](https://wiki.metacentrum.cz/wiki/About_scheduling_system), edit in last section of `structure_multi_1_submitter.sh` the `qsub` line. Also, if you need to submit the job to particular queue, change time to run, needed memory or so (e.g. for larger data), edit required resources on that `qsub` line.
 
