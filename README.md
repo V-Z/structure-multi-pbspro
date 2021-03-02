@@ -3,7 +3,7 @@ STRUCTURE multi PBS Pro scripts
 
 **Set of scripts to run [STRUCTURE](https://web.stanford.edu/group/pritchardlab/structure.html) in parallel** on computing grids like [MetaCentrum](https://www.metacentrum.cz/). Scripts are designed for grids and clusters using PBS Pro, but can be easily adopted for another queue system.
 
-Version: 1.0
+Version: 1.1
 
 # Author
 
@@ -39,6 +39,7 @@ Either download and decompress [latest release](https://github.com/V-Z/structure
 git clone https://github.com/V-Z/structure-multi-pbspro.git
 cd structure-multi-pbspro/
 ./structure_multi_1_submitter.sh -h
+./structure_multi_1_submitter.sh -v
 ```
 
 Consider copying of both scripts `structure_multi_1_submitter.sh` and `structure_multi_2_qsub_run.sh` into some folder dedicated to store scripts and software like `~/bin/` to have them available in PATH.

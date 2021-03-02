@@ -53,7 +53,7 @@ while getopts "hvs:m:e:i:n:o:f:k:r:" INITARGS; do
 			exit
 			;;
 		v) # Print script version and exit
-			echo "Version: 1.0"
+			echo "Version: 1.1"
 			echo "Author: Vojtěch Zeisek, <https://trapa.cz/en>"
 			echo "Homepage and documentation: <https://github.com/V-Z/structure-multi-pbspro>"
 			echo "Discussion: <https://github.com/V-Z/structure-multi-pbspro/discussions>"
