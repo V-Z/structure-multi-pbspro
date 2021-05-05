@@ -61,6 +61,7 @@ Script `structure_multi_1_submitter.sh` will use `qsub` to submit multiple jobs 
 * `-f` --- Minimal K. Default is 1.
 * `-k` --- Maximal K. Default is 10.
 * `-r` --- How many times run for each K. Default is 10.
+* `-w` --- Walltime (maximal running time) in hours for individual job to finish. Default is 24. See documentation of your cluster/grid scheduling system (e.g. [MetaCentrum](https://wiki.metacentrum.cz/wiki/About_scheduling_system)).
 
 Script `structure_multi_1_submitter.sh` will pass needed variables --- i.e. input files, output name and directory, path to STRUCTURE binary (if needed) and particular K and repetition --- to `structure_multi_2_qsub_run.sh` which will do the calculation. The latter script uses variables passed via `qsub` from script `structure_multi_1_submitter.sh` and calculates single run of STRUCTURE. As all the jobs are submitted in single step, the cluster queueing system can highly parallelize all calculations (if the cluster has enough performance, all jobs can dun in parallel).
 
@@ -94,7 +95,7 @@ ls
 # See help
 ./structure_multi_1_submitter.sh -h
 # Submit the jobs
-./structure_multi_1_submitter.sh -m nuphar_mainparams.txt -e nuphar_extraparams.txt -i nuphar_in.str -n Nuphar -o nuphar_str_out -f 1 -k 15 -r 10
+./structure_multi_1_submitter.sh -m nuphar_mainparams.txt -e nuphar_extraparams.txt -i nuphar_in.str -n Nuphar -o nuphar_str_out -f 1 -k 15 -r 10 -w 1
 # Monitor how the jobs are running...
 qstat -w -n -1 -u "${USER}" -x
 # From time to time see results in the output directory...

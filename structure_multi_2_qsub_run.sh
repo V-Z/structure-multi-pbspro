@@ -10,7 +10,7 @@
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-# qsub -l walltime=24:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="${STRUCTURE}",MAINPARAM="${MAINPARAM}",EXTRPARAM="${EXTRPARAM}",INPUTFILE="${INPUTFILE}",OUTNAME="${OUTNAME}",OUTDIR="${OUTDIR}",K="${K}",R="${R}" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh
+# qsub -l walltime="${WT}":0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="${STRUCTURE}",MAINPARAM="${MAINPARAM}",EXTRPARAM="${EXTRPARAM}",INPUTFILE="${INPUTFILE}",OUTNAME="${OUTNAME}",OUTDIR="${OUTDIR}",K="${K}",R="${R}" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh
 
 ################################################################################
 # Sections of the code where edits are to be expected are marked by "NOTE" in comments (see below)

@@ -29,12 +29,13 @@ OUTDIR=''    # '-o' Output directory
 KMIN=''      # '-f' Minimal K
 KMAX=''      # '-k' Maximal K
 KREP=''      # '-r' How many times run for each K
+WT=''        # '-w' Walltime (maximal running time) in hours for individual job to finish
 # Testing if provided values are numbers/character strings
 NUMTEST='^[0-9]+$' # Testing if provided value is an integer
 CHRTEST='^[a-zA-Z0-9._-]+$' # Testing if provided value is string containing only Latin characters, numbers, dots, underscores or dashes
 
 # Parse initial arguments
-while getopts "hvs:m:e:i:n:o:f:k:r:" INITARGS; do
+while getopts "hvs:m:e:i:n:o:f:k:r:w:" INITARGS; do
 	case "${INITARGS}" in
 		h) # Help and exit
 			echo "Usage options:"
@@ -49,11 +50,12 @@ while getopts "hvs:m:e:i:n:o:f:k:r:" INITARGS; do
 			echo -e "\t-f\tMinimal K. Default is 1."
 			echo -e "\t-k\tMaximal K. Default is 10."
 			echo -e "\t-r\tHow many times run for each K. Default is 10."
+			echo -e "\t-w\tWalltime (maximal running time) in hours for individual job to finish. Default is 24. See documentation of your cluster/grid scheduling system (e.g. <https://wiki.metacentrum.cz/wiki/About_scheduling_system>)."
 			echo
 			exit
 			;;
 		v) # Print script version and exit
-			echo "Version: 1.1"
+			echo "Version: 1.2"
 			echo "Author: Vojtěch Zeisek, <https://trapa.cz/en>"
 			echo "Homepage and documentation: <https://github.com/V-Z/structure-multi-pbspro>"
 			echo "Discussion: <https://github.com/V-Z/structure-multi-pbspro/discussions>"
@@ -163,6 +165,17 @@ while getopts "hvs:m:e:i:n:o:f:k:r:" INITARGS; do
 				exit 1
 				fi
 			;;
+			w) # Walltime required to finish the calculation
+				if [[ ${OPTARG} =~ ${NUMTEST} ]]; then
+				WT="${OPTARG}"
+				echo "Requested walltime for each job to finish: ${WT} hours."
+				echo
+				else
+					echo "Error! You did not provide correct number of hours for walltime (-w) in hours, e.g. 96, \"${OPTARG}\"!"
+					echo
+					exit 1
+					fi
+			;;
 		*)
 			echo "Error! Unknown option!"
 			echo "See usage options: \"$0 -h\""
@@ -234,6 +247,11 @@ if [ "${KMIN}" -gt "${KMAX}" ]; then # Ensuring minimal K is smaller than maxima
 	echo
 	exit 1
 	fi
+if [ -z "${WT}" ]; then # Requested walltime (in hours) for each job to finish
+	echo "Walltime (maximal running time of each job) in hours (-w) was not specified! Using default value 24."
+	WT='24'
+	echo
+	fi
 
 ################################################################################
 # End of processing of user input and checking if all required parameters are provided
@@ -259,7 +277,7 @@ for (( K="${KMIN}"; K<="${KMAX}"; K++ )); do
 		echo "Submitting job for K ${K}, repetition ${R}."
 		# Submission using PBS Pro
 		# NOTE Edit following command on clusters/grids using different queuing system or if different parameters are needed
-		qsub -l walltime=24:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="${STRUCTURE}",MAINPARAM="${MAINPARAM}",EXTRPARAM="${EXTRPARAM}",INPUTFILE="${INPUTFILE}",OUTNAME="${OUTNAME}",OUTDIR="${OUTDIR}",K="${K}",R="${R}" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh || { echo "Job submission failed!" && exit 1; }
+		qsub -l walltime="${WT}":0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="${STRUCTURE}",MAINPARAM="${MAINPARAM}",EXTRPARAM="${EXTRPARAM}",INPUTFILE="${INPUTFILE}",OUTNAME="${OUTNAME}",OUTDIR="${OUTDIR}",K="${K}",R="${R}" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh || { echo "Job submission failed!" && exit 1; }
 		echo
 		done
 	done
