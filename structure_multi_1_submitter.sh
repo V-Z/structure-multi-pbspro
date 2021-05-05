@@ -124,9 +124,9 @@ while getopts "hvs:m:e:i:n:o:f:k:r:" INITARGS; do
 				echo "Output directory: ${OUTDIR}"
 				echo
 				else
-					echo "Output directory ${OUTDIR} doesn't exist (-o) - creating 'structure_out'."
-					OUTDIR='structure_out'
-					mkdir "${OUTDIR}" || { echo "Error! Can't create ${OUTDIR}!"; echo; exit 1; }
+					echo "Output directory ${OUTDIR} doesn't exist (-o) - creating it."
+					mkdir "${OPTARG}" || { echo "Error! Can't create ${OUTDIR}!"; echo; exit 1; }
+					OUTDIR=$(realpath "${OPTARG}")
 					echo
 					fi
 			;;

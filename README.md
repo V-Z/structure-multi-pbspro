@@ -3,7 +3,7 @@ STRUCTURE multi PBS Pro scripts
 
 **Set of scripts to run [STRUCTURE](https://web.stanford.edu/group/pritchardlab/structure.html) in parallel** on computing grids like [MetaCentrum](https://www.metacentrum.cz/). Scripts are designed for grids and clusters using PBS Pro, but can be easily adopted for another queue system.
 
-Version: 1.1
+Version: 1.2
 
 # Author
 
@@ -79,6 +79,27 @@ qstat -w -n -1 -u "${USER}" -x
 If jobs are correctly submitted, but there are no `*_f` output files in the output directory (`str_outdir` in the above example), check output logs as there is probably something wrong with your input data. If so, consult [STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/html/structure.html). If input files were prepared on Windows, ensure they have correct EOL, e.g. using `dos2unix`.
 
 Normally, there is **no need to manually run** `structure_multi_2_qsub_run.sh` --- it is used by `structure_multi_1_submitter.sh`. It is possible to use `structure_multi_2_qsub_run.sh` for single run (see comments in it what to edit in such case).
+
+## Test data
+
+Reduced microsatellite (SSRs) dataset of *Nuphar lutea* from Czech rivers (65 individuals, 5 loci, 13 populations) from 3 disconnected river basins (Elbe, Morava, Oder). Input file `nuphar_in.str`, STRUCTURE MAINPARAMS file `nuphar_mainparams.txt` and STRUCTURE EXTRAPARAMS file `nuphar_extraparams.txt`.
+
+```shell
+# Clone the git repository
+git clone https://github.com/V-Z/structure-multi-pbspro.git
+# Go to the directory
+cd structure-multi-pbspro/
+# See content
+ls
+# See help
+./structure_multi_1_submitter.sh -h
+# Submit the jobs
+./structure_multi_1_submitter.sh -m nuphar_mainparams.txt -e nuphar_extraparams.txt -i nuphar_in.str -n Nuphar -o nuphar_str_out -f 1 -k 15 -r 10
+# Monitor how the jobs are running...
+qstat -w -n -1 -u "${USER}" -x
+# From time to time see results in the output directory...
+ls -lh nuphar_out/
+```
 
 # Adopting the scripts for another clusters and grids than Czech MetaCentrum
 
