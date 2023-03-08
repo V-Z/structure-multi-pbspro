@@ -66,14 +66,14 @@ while getopts "hvs:m:e:i:n:o:f:k:r:w:" INITARGS; do
 			exit
 			;;
 		s) # Path to STRUCTURE binary
-			if [ -x "${OPTARG}" ]; then
+			if [[ -x "${OPTARG}" ]]; then
 				STRUCTURE="${OPTARG}"
 				echo "STRUCTURE binary: ${STRUCTURE}"
 				echo
 				fi
 			;;
 		m) # Path to STRUCTURE MAINPARAMS file
-			if [ -r "${OPTARG}" ]; then
+			if [[ -r "${OPTARG}" ]]; then
 				MAINPARAM=$(realpath "${OPTARG}")
 				echo "STRUCTURE MAINPARAMS file: ${MAINPARAM}"
 				echo
@@ -84,7 +84,7 @@ while getopts "hvs:m:e:i:n:o:f:k:r:w:" INITARGS; do
 					fi
 			;;
 		e) # Path to STRUCTURE EXTRAPARAMS file
-			if [ -r "${OPTARG}" ]; then
+			if [[ -r "${OPTARG}" ]]; then
 				EXTRPARAM=$(realpath "${OPTARG}")
 				echo "STRUCTURE EXTRAPARAMS file: ${EXTRPARAM}"
 				echo
@@ -95,7 +95,7 @@ while getopts "hvs:m:e:i:n:o:f:k:r:w:" INITARGS; do
 					fi
 			;;
 		i) # Input data file
-			if [ -r "${OPTARG}" ]; then
+			if [[ -r "${OPTARG}" ]]; then
 				INPUTFILE=$(realpath "${OPTARG}")
 				echo "Input data file: ${INPUTFILE}"
 				echo
@@ -117,7 +117,7 @@ while getopts "hvs:m:e:i:n:o:f:k:r:w:" INITARGS; do
 				fi
 			;;
 		o) # Output directory
-			if [ -d "${OPTARG}" ]; then
+			if [[ -d "${OPTARG}" ]]; then
 				OUTDIR=$(realpath "${OPTARG}")
 				echo "Output directory: ${OUTDIR}"
 				echo
@@ -186,7 +186,7 @@ while getopts "hvs:m:e:i:n:o:f:k:r:w:" INITARGS; do
 ################################################################################
 
 # Checking if all required parameters are provided
-if [ -z "${STRUCTURE}" ]; then # Path to STRUCTURE binary
+if [[ -z "${STRUCTURE}" ]]; then # Path to STRUCTURE binary
 	if command -v structure >/dev/null 2>&1; then
 		STRUCTURE="$(command -v structure)" || { echo ""; exit 1; }
 		echo "STRUCTURE was found: ${STRUCTURE}"
@@ -197,57 +197,57 @@ if [ -z "${STRUCTURE}" ]; then # Path to STRUCTURE binary
 			echo
 			fi
 		fi
-if [ -z "${MAINPARAM}" ]; then # Path to STRUCTURE MAINPARAMS file
+if [[ -z "${MAINPARAM}" ]]; then # Path to STRUCTURE MAINPARAMS file
 	echo "Error! Path to STRUCTURE MAINPARAMS file (-m) was not specified!"
 	echo "See usage options: \"$0 -h\""
 	echo
 	exit 1
 	fi
-if [ -z "${EXTRPARAM}" ]; then # Path to STRUCTURE EXTRAPARAMS file
+if [[ -z "${EXTRPARAM}" ]]; then # Path to STRUCTURE EXTRAPARAMS file
 	echo "Error! Path to STRUCTURE EXTRAPARAMS file (-e) was not specified!"
 	echo "See usage options: \"$0 -h\""
 	echo
 	exit 1
 	fi
-if [ -z "${INPUTFILE}" ]; then # Input data file
+if [[ -z "${INPUTFILE}" ]]; then # Input data file
 	echo "Error! Path to input data file (-i) was not specified!"
 	echo "See usage options: \"$0 -h\""
 	echo
 	exit 1
 	fi
-if [ -z "${OUTNAME}" ]; then # Output files base name
+if [[ -z "${OUTNAME}" ]]; then # Output files base name
 	echo "Output files base name (-n) was not specified. Using default 'res'."
 	OUTNAME='res'
 	echo
 	fi
-if [ -z "${OUTDIR}" ]; then # Output directory
+if [[ -z "${OUTDIR}" ]]; then # Output directory
 	echo "Error! Output directory (-o) was not specified!"
 	echo "See usage options: \"$0 -h\""
 	echo
 	exit 1
 	fi
-if [ -z "${KMIN}" ]; then # Minimal K
+if [[ -z "${KMIN}" ]]; then # Minimal K
 	echo "Minimal K (-f) was not specified! Using default value 1."
 	KMIN='1'
 	echo
 	fi
-if [ -z "${KMAX}" ]; then # Maximal K
+if [[ -z "${KMAX}" ]]; then # Maximal K
 	echo "Maximal K (-k) was not specified! Using default value 10."
 	KMAX='10'
 	echo
 	fi
-if [ -z "${KREP}" ]; then # How many times run for each K
+if [[ -z "${KREP}" ]]; then # How many times run for each K
 	echo "How many times run for each K (-r) was not specified! Using default value 10."
 	KREP='10'
 	echo
 	fi
-if [ "${KMIN}" -gt "${KMAX}" ]; then # Ensuring minimal K is smaller than maximal
+if [[ "${KMIN}" -gt "${KMAX}" ]]; then # Ensuring minimal K is smaller than maximal
 	echo "User error! Minimal K is larger than maximal!"
 	echo "See usage options: \"$0 -h\""
 	echo
 	exit 1
 	fi
-if [ -z "${WT}" ]; then # Requested walltime (in hours) for each job to finish
+if [[ -z "${WT}" ]]; then # Requested walltime (in hours) for each job to finish
 	echo "Walltime (maximal running time of each job) in hours (-w) was not specified! Using default value 24."
 	WT='24'
 	echo

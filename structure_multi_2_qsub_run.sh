@@ -37,31 +37,31 @@
 
 # Checking if all required variables are provided
 # Structure binary (variable STRUCTURE) is checked later, together with possible loading of STRUCTURE module
-if [ -z "${MAINPARAM}" ]; then
+if [[ -z "${MAINPARAM}" ]]; then
 	echo "Error! Path to STRUCTURE MAINPARAMS file not provided!"
 	exit 1
 	fi
-if [ -z "${EXTRPARAM}" ]; then
+if [[ -z "${EXTRPARAM}" ]]; then
 	echo "Error! Path to STRUCTURE EXTRAPARAMS file not provided!"
 	exit 1
 	fi
-if [ -z "${INPUTFILE}" ]; then
+if [[ -z "${INPUTFILE}" ]]; then
 	echo "Error! Path to input data file not provided!"
 	exit 1
 	fi
-if [ -z "${OUTNAME}" ]; then
+if [[ -z "${OUTNAME}" ]]; then
 	echo "Error! Output files base name not provided!"
 	exit 1
 	fi
-if [ -z "${OUTDIR}" ]; then
+if [[ -z "${OUTDIR}" ]]; then
 	echo "Error! Path to output directory not provided!"
 	exit 1
 	fi
-if [ -z "${K}" ]; then
+if [[ -z "${K}" ]]; then
 	echo "Error! K not provided!"
 	exit 1
 	fi
-if [ -z "${R}" ]; then
+if [[ -z "${R}" ]]; then
 	echo "Error! R not provided!"
 	exit 1
 	fi
@@ -83,7 +83,7 @@ trap 'cp -ar "${SCRATCH}" "${OUTDIR}"/ && clean_scratch' TERM
 ################################################################################
 
 # If custom STRUCTURE binary is not provided, load its module
-if [ -z "${STRUCTURE}" ]; then
+if [[ -z "${STRUCTURE}" ]]; then
 	echo "Custom path to STRUCTURE binary not provided"
 	echo "Loading module"
 	# NOTE Edit following command on clusters/grids using different loading of application modules
@@ -118,7 +118,7 @@ echo
 ################################################################################
 
 # Running the STRUCTURE
-echo "Running STRUCTURE with MAINPARAMS file $(basename "${MAINPARAM}"), EXTRAPARAMS file $(basename "${EXTRPARAM}") and input file $(basename "${INPUTFILE}") for K ${K} and repetition ${R} at $(date)..." | tee "${OUTNAME}.k.${K}.rep.${R}.log"
+echo "Running STRUCTURE with MAINPARAMS file $(basename "${MAINPARAM}"), EXTRAPARAMS file $(basename "${EXTRPARAM}") and input file $(basename "${INPUTFILE}") for K ${K} and repetition ${R} at $(date || true)..." | tee "${OUTNAME}.k.${K}.rep.${R}.log"
 echo | tee -a "${OUTNAME}.k.${K}.rep.${R}.log"
 "${STRUCTURE}" -m "$(basename "${MAINPARAM}")" -e "$(basename "${EXTRPARAM}")" -K "${K}" -i "$(basename "${INPUTFILE}")" -o "${OUTNAME}.k.${K}.rep.${R}.out" | tee -a "${OUTNAME}.k.${K}.rep.${R}.log"
 echo
