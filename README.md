@@ -3,7 +3,7 @@ STRUCTURE multi PBS Pro scripts
 
 **Set of scripts to run [STRUCTURE](https://web.stanford.edu/group/pritchardlab/structure.html) in parallel** on computing grids like [MetaCentrum](https://www.metacentrum.cz/). Scripts are designed for grids and clusters using PBS Pro, but can be easily adopted for another queue system.
 
-Version: 1.2
+Version: 1.3
 
 # Author
 
@@ -23,7 +23,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 # About STRUCTURE and its parallelization
 
-STRUCTURE itself process single file in time. It has simple Java GUI available to create batch task and run on desktop, or also possibly on MetaCentrum. Other option in [ParallelStructure R package](https://r-forge.r-project.org/projects/parallstructure/) (see my [example](https://trapa.cz/en/structure-r-linux) and [slides](https://soubory.trapa.cz/rcourse/r_mol_data_phylogen.pdf)), but it has problems with some input file formats. It runs on single computer, using multiple cores.
+STRUCTURE itself process single file in time. It has simple Java GUI available to create batch task and run on desktop, or also possibly on MetaCentrum. Other option is [ParallelStructure R package](https://r-forge.r-project.org/projects/parallstructure/) (see my [example](https://trapa.cz/en/structure-r-linux) and [slides](https://soubory.trapa.cz/rcourse/r_mol_data_phylogen.pdf)), but it has problems with some input file formats. It runs on single computer, using multiple cores.
 
 Provided scripts distribute individual runs of STRUCTURE among multiple nodes (computers, servers) in computing cluster/grid, which speeds up everything a lot. STRUCTURE must be rune repeatedly for different K, and also for each K repeatedly. Here, `structure_multi_1_submitter.sh` will submit each single run as individual computing job. As soon as `structure_multi_1_submitter.sh` is done, the computing jobs are submitted to the queue and user can monitor their progress by commands like `qstat` (depending on scheduling system of the computing grid/cluster), and see if something already appeared in the output directory.
 
@@ -62,6 +62,8 @@ Script `structure_multi_1_submitter.sh` will use `qsub` to submit multiple jobs 
 * `-k` --- Maximal K. Default is 10.
 * `-r` --- How many times run for each K. Default is 10.
 * `-w` --- Walltime (maximal running time) in hours for individual job to finish. Default is 24. See documentation of your cluster/grid scheduling system (e.g. [MetaCentrum](https://wiki.metacentrum.cz/wiki/About_scheduling_system)).
+
+If `-s` is not specified (and `structure_multi_1_submitter.sh` doesn't find it in PATH), then `structure_multi_2_qsub_run.sh` will load module `structure-2.3.4` and use it.
 
 Script `structure_multi_1_submitter.sh` will pass needed variables --- i.e. input files, output name and directory, path to STRUCTURE binary (if needed) and particular K and repetition --- to `structure_multi_2_qsub_run.sh` which will do the calculation. The latter script uses variables passed via `qsub` from script `structure_multi_1_submitter.sh` and calculates single run of STRUCTURE. As all the jobs are submitted in single step, the cluster queueing system can highly parallelize all calculations (if the cluster has enough performance, all jobs can dun in parallel).
 

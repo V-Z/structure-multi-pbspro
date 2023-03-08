@@ -55,7 +55,7 @@ while getopts "hvs:m:e:i:n:o:f:k:r:w:" INITARGS; do
 			exit
 			;;
 		v) # Print script version and exit
-			echo "Version: 1.2"
+			echo "Version: 1.3"
 			echo "Author: Vojtěch Zeisek, <https://trapa.cz/en>"
 			echo "Homepage and documentation: <https://github.com/V-Z/structure-multi-pbspro>"
 			echo "Discussion: <https://github.com/V-Z/structure-multi-pbspro/discussions>"
@@ -67,13 +67,9 @@ while getopts "hvs:m:e:i:n:o:f:k:r:w:" INITARGS; do
 			;;
 		s) # Path to STRUCTURE binary
 			if [ -x "${OPTARG}" ]; then
-			STRUCTURE="${OPTARG}"
-			echo "STRUCTURE binary: ${STRUCTURE}"
-			echo
-			else
-				echo "Error! You did not provide correct path to STRUCTURE binary (-s) \"${OPTARG}\"!"
+				STRUCTURE="${OPTARG}"
+				echo "STRUCTURE binary: ${STRUCTURE}"
 				echo
-				exit 1
 				fi
 			;;
 		m) # Path to STRUCTURE MAINPARAMS file
@@ -191,12 +187,16 @@ while getopts "hvs:m:e:i:n:o:f:k:r:w:" INITARGS; do
 
 # Checking if all required parameters are provided
 if [ -z "${STRUCTURE}" ]; then # Path to STRUCTURE binary
-	command -v structure >/dev/null 2>&1 || {
-		echo "Path to STRUCTURE binary (-s) was not specified and command 'structure' was not found in PATH."
-		echo "If STRUCTURE module will not be correctly loaded in 'structure_multi_2_qsub_run.sh', all jobs will crash."
+	if command -v structure >/dev/null 2>&1; then
+		STRUCTURE="$(command -v structure)" || { echo ""; exit 1; }
+		echo "STRUCTURE was found: ${STRUCTURE}"
 		echo
-		}
-	fi
+		else
+			echo "Path to STRUCTURE binary (-s) was not specified and command 'structure' was not found in PATH."
+			echo "If STRUCTURE module will not be correctly loaded in 'structure_multi_2_qsub_run.sh', all jobs will crash."
+			echo
+			fi
+		fi
 if [ -z "${MAINPARAM}" ]; then # Path to STRUCTURE MAINPARAMS file
 	echo "Error! Path to STRUCTURE MAINPARAMS file (-m) was not specified!"
 	echo "See usage options: \"$0 -h\""
