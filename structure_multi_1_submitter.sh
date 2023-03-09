@@ -118,13 +118,13 @@ while getopts "hvs:m:e:i:n:o:f:k:r:w:" INITARGS; do
 			;;
 		o) # Output directory
 			if [[ -d "${OPTARG}" ]]; then
-				OUTDIR=$(realpath "${OPTARG}")
+				OUTDIR=$(expr "${OPTARG}" : / >/dev/null && echo "${OPTARG}" || echo "$(pwd -L)/${OPTARG}")
 				echo "Output directory: ${OUTDIR}"
 				echo
 				else
 					echo "Output directory ${OUTDIR} doesn't exist (-o) - creating it."
-					mkdir "${OPTARG}" || { echo "Error! Can't create ${OUTDIR}!"; echo; exit 1; }
-					OUTDIR=$(realpath "${OPTARG}")
+					OUTDIR=$(expr "${OPTARG}" : / >/dev/null && echo "${OPTARG}" || echo "$(pwd -L)/${OPTARG}")
+					mkdir -p "${OUTDIR}" || { echo "Error! Can't create ${OUTDIR}!"; echo; exit 1; }
 					echo
 					fi
 			;;
