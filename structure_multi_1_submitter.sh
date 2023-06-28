@@ -50,7 +50,7 @@ while getopts "hvs:m:e:i:n:o:f:k:r:w:" INITARGS; do
 			echo -e "\t-f\tMinimal K. Default is 1."
 			echo -e "\t-k\tMaximal K. Default is 10."
 			echo -e "\t-r\tHow many times run for each K. Default is 10."
-			echo -e "\t-w\tWalltime (maximal running time) in hours for individual job to finish. Default is 24. See documentation of your cluster/grid scheduling system (e.g. <https://wiki.metacentrum.cz/wiki/About_scheduling_system>)."
+			echo -e "\t-w\tWalltime (maximal running time) in hours for individual job to finish. Default is 24. See documentation of your cluster/grid scheduling system (e.g. <https://docs.metacentrum.cz/advanced/pbs-options/>)."
 			echo
 			exit
 			;;
@@ -264,7 +264,7 @@ echo
 ################################################################################
 # Jobs submission
 # NOTE On another clusters than Czech MetaCentrum edit the 'qsub' command below to fit your needs
-# See https://wiki.metacentrum.cz/wiki/About_scheduling_system
+# See https://docs.metacentrum.cz/advanced/pbs-options/
 # NOTE Edit qsub parameters if you need more resources, use particular cluster, etc.
 ################################################################################
 

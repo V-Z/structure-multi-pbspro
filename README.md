@@ -29,7 +29,7 @@ Provided scripts distribute individual runs of STRUCTURE among multiple nodes (c
 
 # Requirements to use the scripts
 
-The scripts are written for Linux servers. They might be running on another UNIX systems. Apart of BASH, the only requirement is [STRUCTURE](https://web.stanford.edu/group/pritchardlab/structure.html). It [is already installed on MetaCentrum](https://wiki.metacentrum.cz/wiki/Structure), so that user can simply load the module. If using own installation of STRUCTURE, either comment out or update respective line in script `structure_multi_2_qsub.sh`. If you are unsure how to work in Linux command line on computing cluster, consult e.g. [my slides](https://soubory.trapa.cz/linuxcourse/linux_bash_metacentrum_course.pdf) or [MetaCentrum wiki](https://wiki.metacentrum.cz/).
+The scripts are written for Linux servers. They might be running on another UNIX systems. Apart of BASH, the only requirement is [STRUCTURE](https://web.stanford.edu/group/pritchardlab/structure.html). It is already installed on MetaCentrum (module `structure/2.3.4`), so that user can simply load the module. If using own installation of STRUCTURE, either comment out or update respective line in script `structure_multi_2_qsub.sh`. If you are unsure how to work in Linux command line on computing cluster, consult e.g. [my slides](https://soubory.trapa.cz/linuxcourse/linux_bash_metacentrum_course.pdf) or [MetaCentrum documentation](https://docs.metacentrum.cz/).
 
 # Installation
 
@@ -61,9 +61,9 @@ Script `structure_multi_1_submitter.sh` will use `qsub` to submit multiple jobs 
 * `-f` --- Minimal K. Default is 1.
 * `-k` --- Maximal K. Default is 10.
 * `-r` --- How many times run for each K. Default is 10.
-* `-w` --- Walltime (maximal running time) in hours for individual job to finish. Default is 24. See documentation of your cluster/grid scheduling system (e.g. [MetaCentrum](https://wiki.metacentrum.cz/wiki/About_scheduling_system)).
+* `-w` --- Walltime (maximal running time) in hours for individual job to finish. Default is 24. See documentation of your cluster/grid scheduling system (e.g. [MetaCentrum](https://docs.metacentrum.cz/advanced/pbs-options/)).
 
-If `-s` is not specified (and `structure_multi_1_submitter.sh` doesn't find it in PATH), then `structure_multi_2_qsub_run.sh` will load module `structure-2.3.4` and use it.
+If `-s` is not specified (and `structure_multi_1_submitter.sh` doesn't find it in PATH), then `structure_multi_2_qsub_run.sh` will load module `structure/2.3.4` and use it.
 
 Script `structure_multi_1_submitter.sh` will pass needed variables --- i.e. input files, output name and directory, path to STRUCTURE binary (if needed) and particular K and repetition --- to `structure_multi_2_qsub_run.sh` which will do the calculation. The latter script uses variables passed via `qsub` from script `structure_multi_1_submitter.sh` and calculates single run of STRUCTURE. As all the jobs are submitted in single step, the cluster queueing system can highly parallelize all calculations (if the cluster has enough performance, all jobs can dun in parallel).
 
@@ -108,13 +108,13 @@ ls -lh nuphar_out/
 
 Edits **might be** required on clusters/grids using **different scheduling system than PBS Pro**. Of course, improvements are welcomed, but *edit the code only if you know what you are doing*. ;-)
 
-If your cluster/grid is using different scheduling system than [PBS on MetaCentrum](https://wiki.metacentrum.cz/wiki/About_scheduling_system), edit in last section of `structure_multi_1_submitter.sh` the `qsub` line. Also, if you need to submit the job to particular queue, change time to run, needed memory or so (e.g. for larger data), edit required resources on that `qsub` line.
+If your cluster/grid is using different scheduling system than [PBS on MetaCentrum](https://docs.metacentrum.cz/advanced/pbs-options/), edit in last section of `structure_multi_1_submitter.sh` the `qsub` line. Also, if you need to submit the job to particular queue, change time to run, needed memory or so (e.g. for larger data), edit required resources on that `qsub` line.
 
-If your cluster/grid is using different method to cleanup of temporal (scratch) directories [than MetaCentrum](https://wiki.metacentrum.cz/wiki/Trap_command_usage), edit or remove `trap` commands in `structure_multi_2_qsub_run.sh`. If your cluster/grid is using different method to manage application modules [than MetaCentrum](https://wiki.metacentrum.cz/wiki/Structure), edit or remove the block with `module add` command in `structure_multi_2_qsub_run.sh`. If your cluster/grid is using different name of variable pointing to temporal working directory than `SCRATCH` on [MetaCentrum](https://wiki.metacentrum.cz/wiki/Beginners_guide), replace all occurrences of `SCRATCH` by the correct variable name in `structure_multi_2_qsub_run.sh`.
+If your cluster/grid is using different method to cleanup of temporal (scratch) directories [than MetaCentrum](https://docs.metacentrum.cz/advanced/job-tracking/#trap-the-term), edit or remove `trap` commands in `structure_multi_2_qsub_run.sh`. If your cluster/grid is using different method to manage application modules than MetaCentrum (there `structure/2.3.4`), edit or remove the block with `module add` command in `structure_multi_2_qsub_run.sh`. If your cluster/grid is using different name of variable pointing to temporal working directory than `SCRATCH` on [MetaCentrum](https://docs.metacentrum.cz/basics/concepts/#scratch-directory), replace all occurrences of `SCRATCH` by the correct variable name in `structure_multi_2_qsub_run.sh`.
 
 Of course, improvements, generalizations for easier work on another clusters/grids are welcomed. :-)
 
 # Postprocessing of the results
 
-For next step collect all `res.k.X.rep.Y.out_f` files in the output directory. Select the best K using e.g. Structure_sum R script (see my older [example](https://trapa.cz/en/structure-r-linux) and [slides](https://trapa.cz/sites/default/files/r_mol_data_phylogen_2020.pdf) --- chapter *Structure* from slide 204) or [Structure Harvester](https://taylor0.biology.ucla.edu/structureHarvester/). Structure_sum was originally written by [Dorothee Ehrich](https://en.uit.no/ansatte/person?p_document_id=41186) and [updated for modern R by Marek Šlenker](https://github.com/MarekSlenker/structureSum). Align and reorder the results with [CLUMPP](https://web.stanford.edu/group/rosenberglab/clumpp.html) and draw final plots by e.g. [distruct](https://web.stanford.edu/group/rosenberglab/distruct.html). See also my older [complete example](https://trapa.cz/en/structure-r-linux).
+For next step collect all `res.k.X.rep.Y.out_f` files in the output directory. Select the best K using e.g. Structure_sum R script (see my older [example](https://trapa.cz/en/structure-r-linux) and [slides](https://trapa.cz/sites/default/files/r_mol_data_phylogen_2020.pdf) --- chapter *Structure* from slide 204) or [Structure Harvester](https://taylor0.biology.ucla.edu/structureHarvester/). Structure_sum was originally written by [Dorothée Ehrich](https://en.uit.no/ansatte/person?p_document_id=41186) and updated for modern R by me --- see <https://github.com/V-Z/structure-sum> --- and [Marek Šlenker](https://github.com/MarekSlenker/structureSum). Align and reorder the results with [CLUMPP](https://web.stanford.edu/group/rosenberglab/clumpp.html) and draw final plots by e.g. [distruct](https://web.stanford.edu/group/rosenberglab/distruct.html). See also my older [complete example](https://trapa.cz/en/structure-r-linux).
 

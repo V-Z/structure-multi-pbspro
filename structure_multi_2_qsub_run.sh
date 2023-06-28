@@ -68,7 +68,7 @@ if [[ -z "${R}" ]]; then
 
 ################################################################################
 # Cleanup of temporal (scratch) directory where the calculation was done
-# See https://wiki.metacentrum.cz/wiki/Trap_command_usage
+# See https://docs.metacentrum.cz/advanced/job-tracking/#trap-the-term
 # NOTE On another clusters than Czech MetaCentrum edit or remove the 'trap' commands below
 ################################################################################
 
@@ -78,7 +78,7 @@ trap 'cp -ar "${SCRATCH}" "${OUTDIR}"/ && clean_scratch' TERM
 
 ################################################################################
 # Loading of STRUCTURE application module
-# See https://wiki.metacentrum.cz/wiki/Structure
+# See also https://docs.metacentrum.cz/software/search-soft/
 # NOTE On another clusters than Czech MetaCentrum edit or remove the 'module' command below
 ################################################################################
 
@@ -87,14 +87,14 @@ if [[ -z "${STRUCTURE}" ]]; then
 	echo "Custom path to STRUCTURE binary not provided"
 	echo "Loading module"
 	# NOTE Edit following command on clusters/grids using different loading of application modules
-	module add structure-2.3.4 || exit 1
+	module add structure/2.3.4 || exit 1
 	STRUCTURE="$(command -v structure)" || exit 1
 	echo
 	fi
 
 ################################################################################
 # Switching to temporal (SCRATCH) directory and copying input data there
-# See https://wiki.metacentrum.cz/wiki/Beginners_guide#Run_batch_jobs
+# See https://docs.metacentrum.cz/basics/jobs/
 # NOTE On another clusters than Czech MetaCentrum ensure that SCRATCH is the variable for temporal directory - if not, edit following code accordingly
 ################################################################################
 
