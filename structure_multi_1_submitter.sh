@@ -277,7 +277,7 @@ for (( K="${KMIN}"; K<="${KMAX}"; K++ )); do
 		echo "Submitting job for K ${K}, repetition ${R}."
 		# Submission using PBS Pro
 		# NOTE Edit following command on clusters/grids using different queuing system or if different parameters are needed
-		qsub -l walltime="${WT}":0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="${STRUCTURE}",MAINPARAM="${MAINPARAM}",EXTRPARAM="${EXTRPARAM}",INPUTFILE="${INPUTFILE}",OUTNAME="${OUTNAME}",OUTDIR="${OUTDIR}",K="${K}",R="${R}" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh || { echo "Job submission failed!" && exit 1; }
+		qsub -l walltime="${WT}":0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=1gb -m abe -j oe -N STRUCTURE."${K}"."${R}" -v STRUCTURE="${STRUCTURE}",MAINPARAM="${MAINPARAM}",EXTRPARAM="${EXTRPARAM}",INPUTFILE="${INPUTFILE}",OUTNAME="${OUTNAME}",OUTDIR="${OUTDIR}",K="${K}",R="${R}" "${SCRIPTDIR}"/structure_multi_2_qsub_run.sh || { echo "Job submission failed!" && exit 1; }
 		echo
 		done
 	done
